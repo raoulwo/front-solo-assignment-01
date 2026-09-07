@@ -1,11 +1,9 @@
 <script setup lang="ts">
-import { Button } from './components/ui/button';
+import TodoApp from './components/TodoApp.vue';
 </script>
 
 <template>
-  <div>
-    <Button>Click me!</Button>
-  </div>
+  <TodoApp />
 </template>
 
 <style scoped></style>
