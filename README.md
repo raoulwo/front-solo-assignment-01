@@ -1,5 +1,7 @@
 # Solo Assignment 01
 
+In diesem Solo Assignment habe ich **Stufe B** umgesetzt. Zusätzlich dazu habe ich aus der Stufe C das `useTodos` Composable implementiert, allerdings habe ich keine CSS Custom Properties verwendet (stattdessen shadcn-vue).
+
 ## Project Setup
 
 ```sh
