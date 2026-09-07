@@ -5,21 +5,10 @@ import { computed, ref } from 'vue';
 import Input from './ui/input/Input.vue';
 import Button from './ui/button/Button.vue';
 import Badge from './ui/badge/Badge.vue';
+import { useTodos } from '@/composables/use-todos.ts';
 
-const todos = ref<Todo[]>([
-  {
-    id: 1,
-    text: 'Setup Todo App',
-    status: 'done',
-  },
-  {
-    id: 2,
-    text: 'Finish Todo App',
-    status: 'open',
-  },
-]);
+const { todos, createTodo, toggleTodo, deleteTodo } = useTodos();
 
-let nextId = 3;
 const newTodoText = ref<string>('');
 const currentFilter = ref<'all' | 'open' | 'done'>('all');
 
@@ -35,29 +24,9 @@ const filteredTodos = computed<Todo[]>(() => {
   return todos.value;
 });
 
-function createTodo() {
-  if (!newTodoText.value.trim()) {
-    return;
-  }
-
-  todos.value.push({
-    id: nextId++,
-    text: newTodoText.value.trim(),
-    status: 'open',
-  });
-
+function createTodoItem() {
+  createTodo(newTodoText.value);
   newTodoText.value = '';
-}
-
-function toggleTodo(id: number) {
-  const todo = todos.value.find((todo) => todo.id === id);
-  if (todo) {
-    todo.status = todo.status === 'done' ? 'open' : 'done';
-  }
-}
-
-function deleteTodo(id: number) {
-  todos.value = todos.value.filter((todo) => todo.id !== id);
 }
 </script>
 
@@ -68,9 +37,9 @@ function deleteTodo(id: number) {
         type="text"
         placeholder="Buy groceries..."
         v-model="newTodoText"
-        @keydown.enter="createTodo"
+        @keydown.enter="createTodoItem"
       />
-      <Button class="cursor-pointer" @click="createTodo">Create</Button>
+      <Button class="cursor-pointer" @click="createTodoItem">Create</Button>
     </div>
     <div class="mt-16 space-y-4">
       <div class="flex gap-2">
