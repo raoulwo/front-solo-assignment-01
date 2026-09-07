@@ -1,9 +1,10 @@
 <script setup lang="ts">
 import type { Todo } from '@/types/todo';
 import TodoList from './TodoList.vue';
-import { ref } from 'vue';
+import { computed, ref } from 'vue';
 import Input from './ui/input/Input.vue';
 import Button from './ui/button/Button.vue';
+import Badge from './ui/badge/Badge.vue';
 
 const todos = ref<Todo[]>([
   {
@@ -20,6 +21,19 @@ const todos = ref<Todo[]>([
 
 let nextId = 3;
 const newTodoText = ref<string>('');
+const currentFilter = ref<'all' | 'open' | 'done'>('all');
+
+const filteredTodos = computed<Todo[]>(() => {
+  if (currentFilter.value === 'open') {
+    return todos.value.filter((todo) => todo.status === 'open');
+  }
+
+  if (currentFilter.value === 'done') {
+    return todos.value.filter((todo) => todo.status === 'done');
+  }
+
+  return todos.value;
+});
 
 function createTodo() {
   if (!newTodoText.value.trim()) {
@@ -58,8 +72,32 @@ function deleteTodo(id: number) {
       />
       <Button class="cursor-pointer" @click="createTodo">Create</Button>
     </div>
-    <div class="mt-16">
-      <TodoList :todos="todos" @delete="deleteTodo" @toggle="toggleTodo" />
+    <div class="mt-16 space-y-4">
+      <div class="flex gap-2">
+        <Badge
+          :variant="currentFilter === 'all' ? 'default' : 'outline'"
+          class="cursor-pointer px-2 py-1"
+          @click="currentFilter = 'all'"
+        >
+          All
+        </Badge>
+        <Badge
+          :variant="currentFilter === 'open' ? 'default' : 'outline'"
+          class="cursor-pointer px-2 py-1"
+          @click="currentFilter = 'open'"
+        >
+          Open
+        </Badge>
+        <Badge
+          :variant="currentFilter === 'done' ? 'default' : 'outline'"
+          class="cursor-pointer px-2 py-1"
+          @click="currentFilter = 'done'"
+        >
+          Done
+        </Badge>
+      </div>
+
+      <TodoList :todos="filteredTodos" @delete="deleteTodo" @toggle="toggleTodo" />
     </div>
   </div>
 </template>
